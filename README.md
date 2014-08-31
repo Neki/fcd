@@ -56,10 +56,10 @@ cabal install --only-dependencies
 cabal build
 
 # Add the fcd executable to your PATH
-export PATH="$HOME/.fcd/dist/build/fcd:$PATH"
+echo 'export PATH="$HOME/.fcd/dist/build/fcd:$PATH"' >> ~/.bashrc
 
 # Add the fcd function to your shell
-cat >> .bashrc <<'EOF'
+cat >> ~/.bashrc <<'EOF'
 function fcd () {
   if [ $# -ne 0 ]; then
     command fcd $@
