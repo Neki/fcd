@@ -215,7 +215,7 @@ setCandidates candidates list = do
 -- This is a simple implementation with memoization that uses quadratic space
 -- (O(n*m) where n and m are the length of the inputs).
 -- Note: a possible optimization would be to cache the memoized matrix as a lot
--- of it is still relevant when a new caracter is added.
+-- of it is still relevant when a new character is added.
 lcs :: (Eq a) => [a] -> [a] -> Int
 lcs xs ys = memoized ! (n,m)
   where memoized = array ((0,0),(n,m)) [((i,j), lcs' i j) | i <- [0..n], j <- [0..m] ]
