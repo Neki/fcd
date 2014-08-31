@@ -94,7 +94,7 @@ fcd can be built like any other Haskell project using Cabal. For those not famil
 
 #### Add the fcd function to your shell
 
-fcd is not a shell builtin and thus can not change the current working directory of your shell. Instead, it writes the selected bookmark to the file `~/.fcdresult`. You have to defined a shell function to read this file and `cd`.
+fcd is not a shell builtin and thus can not change the current working directory of your shell. Instead, it writes the selected bookmark to the file `~/.fcdresult`. You have to define a shell function to read this file and `cd`.
 To be able to use fcd as intended, add the following function to the file `~/.bashrc` (if you are using another shell, change as needed):
 
 ```bash
