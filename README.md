@@ -3,6 +3,10 @@
 fcd is a small utility to bookmark directories, then quickly jump to them.
 Selecting a bookmark is done by fuzzy matching.
 
+## Demo
+
+![](http://neki.github.io/fcd/fcd_demo.gif)
+
 ## Usage example
 
 The full list of commands is available with `fcd help`.
