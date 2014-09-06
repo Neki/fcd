@@ -83,9 +83,7 @@ printHelp = do
 -- |Prompt the user to select a bookmark, then write the selected bookmark in
 -- the bookmark file.
 selectBookmark :: [String] -> IO ()
-selectBookmark opts = do
-  toSelect <- displayPrompt $ T.pack $ unwords opts
-  writeResult toSelect
+selectBookmark opts = displayPrompt (T.pack $ unwords opts) >>= writeResult
 
 -- |Prompt the user to select a bookmark, then delete the selected bookmark from
 -- the bookmark file.
@@ -99,17 +97,11 @@ deleteBookmark opts = do
 
 -- |Return the path to the bookmark file.
 bookmarkFile :: IO String
-bookmarkFile = do
-  home <- getHomeDirectory
-  let path = home ++ "/.fcdbookmarks"
-  return path
+bookmarkFile = fmap (++ "/.fcdbookmarks") getHomeDirectory
 
 -- |Return the path to the result file.
 resultFile :: IO String
-resultFile = do
-  home <- getHomeDirectory
-  let path = home ++ "/.fcdresult"
-  return path
+resultFile = fmap (++ "/.fcdresult") getHomeDirectory
 
 -- |Return the list of the available commands (list, add, etc.)
 commandList :: String
@@ -121,7 +113,8 @@ addBookmark :: [T.Text] -> T.Text -> IO ()
 addBookmark allBookmarks bookmark = do
   path <- bookmarkFile
   bookmarkClean <- canonicalizePath $ T.unpack bookmark
-  unless (T.pack bookmarkClean `elem` allBookmarks) $ appendFile path (bookmarkClean ++ "\n")
+  unless (T.pack bookmarkClean `elem` allBookmarks) $
+    appendFile path (bookmarkClean ++ "\n")
 
 -- |Prompt the user to select a bookmark. The given parameter is used to
 -- prepopulate the prompt. Return the user selection.
@@ -193,9 +186,7 @@ updateCandidates inputText candidates candidatesList = do
 
 -- |Write the selected bookmark to the result file
 writeResult :: T.Text -> IO ()
-writeResult selection = do
-    path <- resultFile
-    T.IO.writeFile path selection
+writeResult selection = resultFile >>= flip T.IO.writeFile selection
 
 -- |Retrieve the bookmark list from disk
 readBookmarks :: IO [T.Text]
