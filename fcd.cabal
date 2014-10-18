@@ -1,16 +1,20 @@
 name:                fcd
-version:             0.1.0.0
+version:             1.0.0.0
 synopsis:            A faster way to navigate directories using the command line.
--- description:
+description:         Bookmark directories, then select a bookmark by fuzzy matching. You need to set up a small shell function for this to work properly (see the README).
 license:             MIT
 license-file:        LICENSE
 author:              Benoît Faucon
 maintainer:          faucon.benoit@cegetel.net
--- copyright:
--- category:
+homepage:            https://github.com/Neki/fcd
+category:            Utility
 build-type:          Simple
--- extra-source-files:
 cabal-version:       >=1.10
+bug-reports:         https://github.com/Neki/fcd/issues
+
+source-repository    head
+  type: git
+  location: git@github.com:Neki/fcd.git
 
 executable fcd
   main-is:             Main.hs
