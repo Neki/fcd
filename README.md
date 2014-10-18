@@ -55,7 +55,7 @@ cabal update
 cabal install fcd
 ```
 
-Depending on your Cabal configuration, you may have to add the compiled exectubale to your `$PATH` (not required on Debian/Ubuntu).
+Depending on your Cabal configuration, you may have to add the compiled executable to your `$PATH` (not required on Debian/Ubuntu).
 
 ### Add the fcd function to your shell
 
