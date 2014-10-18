@@ -99,7 +99,9 @@ To be able to use fcd as intended, add the following function to the file `~/.ba
 
 ```bash
 function fcd () {
-  if [ $# -ne 0 ]; then
+  if [ $1 == "s" -o $1 == "select" ]; then
+    command fcd s ${@:2} && cd "`cat "$HOME/.fcdresult"`" && rm "$HOME/.fcdresult";
+  elif [ $# -ne 0 ]; then
     command fcd $@
   else
     command fcd && cd "`cat "$HOME/.fcdresult"`" && rm "$HOME/.fcdresult";
@@ -107,13 +109,15 @@ function fcd () {
 }
 ```
 
-When calling `fcd` in your shell, the above function is executed (instead of the actual fcd executable). If you provided arguments to your call, then this function will pass these arguments to the fcd executable and return. Otherwise, this function will call the fcd executable without arguments, then change your shell current working directory once the fcd executable has returned.
+When calling `fcd` in your shell, the above function is executed (instead of the actual fcd executable). It will check the arguments you provided to `fcd`:
+* if you provided no arguments, or used the `select` command, it will execute the actual `fcd`, then read the bookmark stored in `~/.fcdresult` and `cd` to it.
+* otherwise, it just makes a plain call to `fcd`.
 
 Do not forget to reload your shell.
 
 ## Issues, suggestions or questions?
 
-Use Github issues.
+Use [Github issues](https://github.com/Neki/fcd/issues).
 
 ## Motivation and inspiration
 
