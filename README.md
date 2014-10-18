@@ -39,60 +39,25 @@ All commands can be abbreviated to their first letter: `fcd a`, `fcd d`, and so 
 ## Installation
 
 To install fcd, you have to build the executable from source and add a small helper function to your `.bashrc` (adapt this if you are using another shell).
-Here is a script to install the dependencies and build the project on Ubuntu. If you are using another system, there are more detailed instructions below.
 
-### "Copy and paste" instructions for Ubuntu
+### Build fcd
 
-Copy the following into your terminal (or to a script, then execute the script):
-
-```bash
-# Install the Haskell compiler (GHC), the Cabal build system, and other utilities
-sudo apt-get install git build-essential haskell-platform
-cabal install cabal-install
-
-# Clone the project
-git clone git@github.com:Neki/fcd.git ~/.fcd
-cd ~/.fcd
-cabal sandbox init
-# Install the fcd dependencies
-cabal install --only-dependencies
-# Compile fcd
-cabal build
-
-# Add the fcd executable to your PATH
-echo 'export PATH="$HOME/.fcd/dist/build/fcd:$PATH"' >> ~/.bashrc
-
-# Add the fcd function to your shell
-cat >> ~/.bashrc <<'EOF'
-function fcd () {
-  if [ $# -ne 0 ]; then
-    command fcd $@
-  else
-    command fcd && cd "`cat "$HOME/.fcdresult"`" && rm "$HOME/.fcdresult";
-  fi
-}
-EOF
-
-# Reload your shell
-$SHELL
+You need a Haskell compiler and the `cabal` build tool.
+On a Debian-like system, you can install them with
+```
+sudo apt-get update
+sudo apt-get install haskell-platform
 ```
 
-### Detailed instructions
+You can then use `cabal` to fetch the sources from Hackage, then build and install `fcd`.
+```
+cabal update
+cabal install fcd
+```
 
-#### Build
+Depending on your Cabal configuration, you may have to add the compiled exectubale to your `$PATH` (not required on Debian/Ubuntu).
 
-fcd can be built like any other Haskell project using Cabal. For those not familiar with Cabal, don't worry, it should simple:
-
-0. If not already done, install git (http://www.git-scm.com/downloads). You will also need a C compiler (as a library used by fcd includes some bits of C).
-1. Install GHC, a Haskell compiler, and Cabal, a build system for Haskell. Installing the Haskell platform (http://www.haskell.org/platform/) will provide you with both.
-2. Update Cabal to the latest version: `cabal install cabal-install` (as of this writing, the version shipped with the Haskell platform on most systems is old and does not allow you to create sandboxes. If you do not want to use sandboxes (see below), then this step is probably unecessary.)
-3. Clone the project: `git clone git@github.com:Neki/fcd.git`
-4. `cd` into the project (`cd fcd`) and create a Cabal sandbox: `cabal sandbox init`. While not strictly required, it may save you from an issue known as "Cabal hell" if you happen to build other projects using Haskell on the same system.
-5. Install the dependencies of fcd: `cabal install --only-dependencies`.
-6. Build the project: `cabal build`.
-7. The compiled executable can be found in `fcd/dist/build/fcd/`. Add this to your PATH or copy the `fcd` executable to a directory in your PATH.
-
-#### Add the fcd function to your shell
+### Add the fcd function to your shell
 
 fcd is not a shell builtin and thus can not change the current working directory of your shell. Instead, it writes the selected bookmark to the file `~/.fcdresult`. You have to define a shell function to read this file and `cd`.
 To be able to use fcd as intended, add the following function to the file `~/.bashrc` (if you are using another shell, change as needed):
@@ -114,6 +79,34 @@ When calling `fcd` in your shell, the above function is executed (instead of the
 * otherwise, it just makes a plain call to `fcd`.
 
 Do not forget to reload your shell.
+
+## Build from the git sources
+
+You can also manually clone this repository and build fcd from the latest source. Example for Ubuntu:
+
+```bash
+sudo apt-get update
+# Install a Haskell compiler and the Cabal build system
+sudo apt-get install haskell-platform
+# Update Cabal
+cabal install cabal-install
+# Other dependencies
+sudo apt-get install git build-essential
+
+# Retrieve the latest source
+git clone git@github.com:Neki/fcd.git
+cd fcd
+
+# Set up the build environment
+cabal sandbox init # not mandatory, but recommended to avoid "Cabal hell"
+cabal update
+
+# Build the project
+cabal build
+```
+
+The compiled executable can then be found in `dist/build/fcd`. Add this to your `$PATH` or copy it to a directory on your `$PATH`.
+Do not forget to add the `fcd` function to your shell as described above.
 
 ## Issues, suggestions or questions?
 
