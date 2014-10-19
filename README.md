@@ -64,10 +64,10 @@ To be able to use fcd as intended, add the following function to the file `~/.ba
 
 ```bash
 function fcd () {
-  if [ $1 == "s" -o $1 == "select" ]; then
+  if [ $# -ge 1 -a \( "$1" = "s" -o "$1" = "select" \) ]; then
     command fcd s ${@:2} && cd "`cat "$HOME/.fcdresult"`" && rm "$HOME/.fcdresult";
   elif [ $# -ne 0 ]; then
-    command fcd $@
+    command fcd $@;
   else
     command fcd && cd "`cat "$HOME/.fcdresult"`" && rm "$HOME/.fcdresult";
   fi
