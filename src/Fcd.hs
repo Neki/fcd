@@ -19,10 +19,9 @@ import Graphics.Vty.Widgets.List
 import Graphics.Vty.Widgets.Text
 import Graphics.Vty.Widgets.Edit
 import Graphics.Vty.Widgets.Box
-import Graphics.Vty.Attributes
 import Graphics.Vty.Widgets.Core
 import Graphics.Vty.Widgets.EventLoop
-import Graphics.Vty.LLInput
+import Graphics.Vty.Input
 
 import Paths_fcd (version)
 import Data.Version
@@ -126,18 +125,18 @@ displayPrompt prefill = do
   setEditText inputLine prefill
 
   candidates <- readBookmarks
-  candidatesList <- newTextList def_attr [] 1
+  candidatesList <- newTextList candidates 1
   box <- vBox inputLine candidatesList
 
   mainFocusGroup <- newFocusGroup
   mainFocusGroup `onKeyPressed` \_ key modifiers ->
-    if key == KASCII 'c' && modifiers == [MCtrl] then
+    if key == KChar 'c' && modifiers == [MCtrl] then
       raiseSignal sigINT >> return True
-    else if key == KASCII 'd' && modifiers == [MCtrl] then
+    else if key == KChar 'd' && modifiers == [MCtrl] then
       raiseSignal sigKILL >> return True
-    else if key == KASCII 'h' && modifiers == [MCtrl] then
+    else if key == KChar 'h' && modifiers == [MCtrl] then
       moveSelectionDown candidatesList >> return True
-    else if key == KASCII 'l' && modifiers == [MCtrl] then
+    else if key == KChar 'l' && modifiers == [MCtrl] then
       moveSelectionUp candidatesList >> return True
     else return False
 
