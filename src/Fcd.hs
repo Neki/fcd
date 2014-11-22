@@ -8,6 +8,7 @@ import Control.Monad
 import Control.Concurrent.MVar
 import Data.Array
 import Data.List
+import Data.Char
 import qualified Data.Text as T
 import qualified Data.Text.IO as T.IO
 import System.Directory
@@ -220,11 +221,11 @@ lcs xs ys = memoized ! (n,m)
                    then memoized ! (u - 1, v - 1) + 1
                    else max (memoized ! (u - 1, v)) (memoized ! (u, v - 1))
 
-sortCandidates :: (Eq a) => [[a]] -> [a] -> [[a]]
+sortCandidates :: [String] -> String  -> [String]
 sortCandidates candidates reference = sortBy comparator candidates
   where comparator x y =
-         let distRefToX = distance x reference
-             distRefToY = distance y reference
+         let distRefToX = distance (map toLower x) (map toLower reference)
+             distRefToY = distance (map toLower y) (map toLower reference)
              distance a b  = - lcs a b
          in compare distRefToX distRefToY
 
