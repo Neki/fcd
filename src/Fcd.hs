@@ -1,6 +1,7 @@
 module Fcd (
     run
   , lcs
+  , lengthSub
   , sortCandidates
 ) where
 
@@ -204,30 +205,39 @@ setCandidates candidates list = do
   clearList list
   forM_ candidates (\el -> addToList list el =<< plainText el)
 
--- |Compute the length of the longest common subsequence of two lists.
--- This is a simple implementation with memoization that uses quadratic space
--- (O(n*m) where n and m are the length of the inputs).
--- Note: a possible optimization would be to cache the memoized matrix as a lot
--- of it is still relevant when a new character is added.
-lcs :: (Eq a) => [a] -> [a] -> Int
+newtype CommonSub a = CommonSub { indexesList :: [(a, a)] }
+
+addToSub :: a -> a -> CommonSub a -> CommonSub a
+addToSub x y sub = CommonSub ((x,y) : indexesList sub)
+
+emptySub :: CommonSub a
+emptySub = CommonSub []
+
+lengthSub :: CommonSub a -> Int
+lengthSub x = length $ indexesList x
+
+longestSub :: CommonSub a -> CommonSub a -> CommonSub a
+longestSub x y = if lengthSub x >= lengthSub y then x else y
+
+lcs :: (Eq a) => [a] -> [a] -> CommonSub Int
 lcs xs ys = memoized ! (n,m)
   where memoized = array ((0,0),(n,m)) [((i,j), lcs' i j) | i <- [0..n], j <- [0..m] ]
         n = length xs
         m = length ys
         as = listArray (1, n) xs
         bs = listArray (1, m) ys
-        lcs' _ 0 = 0
-        lcs' 0 _ = 0
+        lcs' _ 0 = emptySub
+        lcs' 0 _ = emptySub
         lcs' u v = if as ! u == bs ! v
-                   then memoized ! (u - 1, v - 1) + 1
-                   else max (memoized ! (u - 1, v)) (memoized ! (u, v - 1))
+                   then addToSub u v (memoized ! (u - 1, v - 1))
+                   else longestSub (memoized ! (u - 1, v)) (memoized ! (u, v - 1))
 
 sortCandidates :: [String] -> String -> [String]
 sortCandidates candidates reference = sortBy comparator candidates
   where comparator x y =
          let distRefToX = distance (map toLower x) (map toLower reference)
              distRefToY = distance (map toLower y) (map toLower reference)
-             distance a b  = - lcs a b
+             distance a b  = - (lengthSub $ lcs a b)
          in compare distRefToX distRefToY
 
 
