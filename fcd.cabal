@@ -26,7 +26,7 @@ executable fcd
 library
   hs-source-dirs:      src
   default-language:    Haskell2010
-  build-depends:       base >= 4.6 && < 5 , array, vty, vty-ui >= 1.8 && < 1.9, unix, directory, text, process >= 1.2.0.0
+  build-depends:       base >= 4.7 && < 4.8 , array, vty, vty-ui >= 1.8 && < 1.9, unix, directory, text, process >= 1.2.0.0
   exposed-modules:     Fcd
   other-modules:       Paths_fcd
   ghc-options: 	       -O2 -Wall -threaded
