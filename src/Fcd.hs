@@ -26,30 +26,35 @@ import Graphics.Vty.Input
 import Paths_fcd (version)
 import Data.Version
 
-data Command = Add | List | PrintVersion | Help | Select | Delete deriving (Eq, Show)
-data Args = Args { command :: Command, name :: String, shortcut :: String, description :: String, execute :: [String] -> IO ()}
+data Action = Add | List | PrintVersion | Help | Select | Delete deriving (Eq, Show)
+data Command = Command { command :: Action, name :: String, shortcut :: String, description :: String, execute :: [String] -> IO ()}
 
-availableCommands :: [Args]
-availableCommands = [ Args { command = Add, name = "add", shortcut = "a", description = "Add new bookmarks. If no additional parameter is provided, bookmark the current directory.", execute = addBookmarks }
-                    , Args { command = List, name = "list", shortcut = "l", description = "List the available bookmarks.", execute = const listBookmarks}
-                    , Args { command = PrintVersion, name = "version", shortcut = "v", description = "Print version number.", execute = const printVersion}
-                    , Args { command = Help, name = "help", shortcut = "h", description = "Print this help.", execute = const printHelp}
-                    , Args { command = Select, name = "select", shortcut = "s", description = "Select a bookmark. This is equivalent to calling fcd without arguments.", execute = selectBookmark }
-                    , Args { command = Delete, name = "delete", shortcut = "d", description = "Delete a bookmark.", execute = deleteBookmark }
+selectCommand :: Command
+selectCommand = Command { command = Select, name = "select", shortcut = "s", description = "Select a bookmark. This is equivalent to calling fcd without arguments.", execute = selectBookmark }
+
+availableCommands :: [Command]
+availableCommands = [ Command { command = Add, name = "add", shortcut = "a", description = "Add new bookmarks. If no additional parameter is provided, bookmark the current directory.", execute = addBookmarks }
+                    , Command { command = List, name = "list", shortcut = "l", description = "List the available bookmarks.", execute = const listBookmarks}
+                    , Command { command = PrintVersion, name = "version", shortcut = "v", description = "Print version number.", execute = const printVersion}
+                    , Command { command = Help, name = "help", shortcut = "h", description = "Print this help.", execute = const printHelp}
+                    , Command { command = Delete, name = "delete", shortcut = "d", description = "Delete a bookmark.", execute = deleteBookmark }
+                    , selectCommand
                     ]
 
 -- |Main entry point for the program
 run :: IO ()
 run = do
   args <- getArgs
-  let (cmdName:opts) = if null args then ["s"] else args
-  case parseCommand cmdName of
-    Nothing -> error $ "Unrecognized command: " ++ cmdName ++ ".\nAvailable commands are: " ++ commandList
-    Just cmd -> execute cmd opts
+  case args of
+    [] -> execute selectCommand []
+    (cmdName:opts) ->
+      case parseCommand cmdName of
+        Nothing -> error $ "Unrecognized command: " ++ cmdName ++ ".\nAvailable commands are: " ++ commandList
+        Just cmd -> execute cmd opts
 
 -- |Given a command name or a short-hand version of a command name, returns the
 -- corresponding command
-parseCommand :: String -> Maybe Args
+parseCommand :: String -> Maybe Command
 parseCommand cmd = find (\arg -> name arg == cmd || shortcut arg == cmd) availableCommands
 
 -- |Add each path in the provided list to the bookmarks file. If given an empty
