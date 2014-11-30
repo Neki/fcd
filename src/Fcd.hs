@@ -52,7 +52,8 @@ run = do
 parseCommand :: String -> Maybe Args
 parseCommand cmd = find (\arg -> name arg == cmd || shortcut arg == cmd) availableCommands
 
--- |Add each path in the provided list to the bookmarks file.
+-- |Add each path in the provided list to the bookmarks file. If given an empty
+-- list, bookmark the current directory instead.
 addBookmarks :: [String] -> IO ()
 addBookmarks [] = addBookmarks ["."]
 addBookmarks xs = do
