@@ -192,7 +192,7 @@ writeResult selection = resultFile >>= flip T.IO.writeFile selection
 readBookmarks :: IO [T.Text]
 readBookmarks = do
   path <- bookmarkFile
-  exist <-  doesFileExist path
+  exist <- doesFileExist path
   if exist
   then liftM T.lines $ T.IO.readFile path
   else return []
@@ -220,7 +220,7 @@ lcs xs ys = memoized ! (n,m)
                    then memoized ! (u - 1, v - 1) + 1
                    else max (memoized ! (u - 1, v)) (memoized ! (u, v - 1))
 
-sortCandidates :: [String] -> String  -> [String]
+sortCandidates :: [String] -> String -> [String]
 sortCandidates candidates reference = sortBy comparator candidates
   where comparator x y =
          let distRefToX = distance (map toLower x) (map toLower reference)
