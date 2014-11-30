@@ -62,7 +62,7 @@ addBookmarks xs = do
 
 -- |Print to stdout the list of bookmarks.
 listBookmarks :: IO ()
-listBookmarks = liftM (T.unpack . T.intercalate (T.pack "\n")) readBookmarks >>= putStrLn
+listBookmarks = liftM (T.intercalate (T.pack "\n")) readBookmarks >>= T.IO.putStrLn
 
 -- |Print to stdout the version number.
 printVersion :: IO ()
@@ -164,16 +164,12 @@ displayPrompt prefill = do
 moveSelectionDown :: Widget (List T.Text FormattedText) -> IO ()
 moveSelectionDown listWidget = do
   selected <- getSelected listWidget
-  case selected of
-    Nothing -> return ()
-    Just (pos, _) -> unless (pos == 0) (setSelected listWidget (pos - 1))
+  maybe (return ()) (\(pos,_ ) -> unless (pos == 0) (setSelected listWidget (pos - 1))) selected
 
 moveSelectionUp :: Widget (List T.Text FormattedText) -> IO ()
 moveSelectionUp listWidget = do
   selected <- getSelected listWidget
-  case selected of
-    Nothing -> return ()
-    Just (pos, _) -> setSelected listWidget (pos + 1) -- vty-ui takes care of not going out of bounds
+  maybe (return ()) (\(pos, _) -> setSelected listWidget (pos + 1)) selected -- vty-ui takes care of not going out of bounds
 
 -- |Update a list widget by sorting the candidates list according to a reference
 updateCandidates :: T.Text                              -- a reference (user provided input)
