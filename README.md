@@ -19,7 +19,7 @@ fcd add
 fcd add ~/mydirectory
 
 # select a bookmark via fuzzy matching and jump to it
-# (will display a prompt
+# (will display a prompt)
 # Use <C-h> and <C-l> to navigate the entries, or type something
 # to refine the search
 fcd
